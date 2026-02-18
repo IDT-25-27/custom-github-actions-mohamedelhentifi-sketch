@@ -2,17 +2,17 @@
 
 Bene! Ora che il progetto è inizializzato e le dipendenze installate, è tempo di creare i file sorgente per la tua GitHub Action Dad Jokes.
 
-### 📖 Theory: Il GitHub Actions Toolkit
+### 📖 Librerie: GitHub Actions Toolkit
 
 La libreria `@actions/core` è la libreria principale del [GitHub Actions Toolkit](https://github.com/actions/toolkit), una raccolta di pacchetti per costruire GitHub Actions in JavaScript. Fornisce metodi essenziali per interagire con l'ambiente runtime di GitHub Actions, per accettare input e per produrre output per altri passaggi del workflow.
 
 > [!TIP]
-> Il [GitHub Actions Toolkit](https://github.com/actions/toolkit) include altre librerie utili come `@actions/github` per interagire con l'API di GitHub e `@actions/artifact` per caricare e scaricare artefatti.
+> [GitHub Actions Toolkit](https://github.com/actions/toolkit) include altre librerie utili come `@actions/github` per interagire con l'API di GitHub e `@actions/artifact` per caricare e scaricare artefatti.
 >
 > Puoi visitare il repository [actions/toolkit](https://github.com/actions/toolkit) per saperne di più.
 
 
-### ⌨️ Activity: Implementa la Dad Jokes Action
+### ⌨️ Attività: Implementa la Dad Jokes Action
 
 Creiamo i file sorgente e implementiamo la logica per la action.
 
@@ -21,7 +21,7 @@ Creiamo i file sorgente e implementiamo la logica per la action.
 1. Crea il file `src/joke.js` per contenere la logica per recuperare una battuta dall'API `icanhazdadjoke.com`:
 
    ```js
-   const request = require("request-promise");
+   import request from "request-promise";
 
    const options = {
      method: "GET",
@@ -38,7 +38,7 @@ Creiamo i file sorgente e implementiamo la logica per la action.
      return res.joke;
    }
 
-   module.exports = getJoke;
+   export default getJoke;
    ```
 
    La funzione `getJoke` effettua una richiesta HTTP GET all'API `icanhazdadjoke.com` e restituisce una dad joke casuale.
@@ -48,8 +48,8 @@ Creiamo i file sorgente e implementiamo la logica per la action.
 1. Crea `src/main.js` che sarà il punto di ingresso principale per la action:
 
    ```js
-   const getJoke = require("./joke");
-   const core = require("@actions/core");
+   import getJoke from "./joke.js";
+   import * as core from "@actions/core";
 
    async function run() {
      const joke = await getJoke();

@@ -48,7 +48,7 @@ Ora che il tuo Codespace è pronto, inizializziamo un nuovo progetto Node.js e i
 1. All'interno della finestra del terminale del tuo GitHub Codespace inizializza un nuovo progetto:
 
    ```sh
-   npm init -y
+   npm init --init-type=module -y
    ```
 
 1. Installa le librerie richieste:
