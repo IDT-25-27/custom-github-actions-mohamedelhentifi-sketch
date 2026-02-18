@@ -1,0 +1,217 @@
+name: GitHub Classroom Autograding
+
+on:
+  push:
+    branches:
+      - welcome-workflow
+      - main
+  workflow_run:
+    workflows: ["Joke Action"]
+    types:
+      - completed
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Check for package.json
+      id: check-package-json
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for package.json'
+        command: 'ls package.json'
+        input: ''
+        expected-output: 'package.json'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for @actions/core dependency
+      id: check-core-dep
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for @actions/core dependency'
+        command: 'cat package.json'
+        input: ''
+        expected-output: '@actions/core'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for @vercel/ncc dependency
+      id: check-ncc-dep
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for @vercel/ncc dependency'
+        command: 'cat package.json'
+        input: ''
+        expected-output: '@vercel/ncc'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check .gitignore excludes node_modules
+      id: check-gitignore
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check .gitignore excludes node_modules'
+        command: 'cat .gitignore'
+        input: ''
+        expected-output: 'node_modules'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for src/main.js
+      id: check-main-js
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for src/main.js'
+        command: 'ls src/main.js'
+        input: ''
+        expected-output: 'src/main.js'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for src/joke.js
+      id: check-joke-js
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for src/joke.js'
+        command: 'ls src/joke.js'
+        input: ''
+        expected-output: 'src/joke.js'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for build script
+      id: check-build-script
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for build script'
+        command: 'cat package.json'
+        input: ''
+        expected-output: 'ncc build src/main.js -o dist'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for dist/index.js
+      id: check-dist-index
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for dist/index.js'
+        command: 'ls dist/index.js'
+        input: ''
+        expected-output: 'dist/index.js'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for action.yml
+      id: check-action-yml
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for action.yml'
+        command: 'ls action.yml'
+        input: ''
+        expected-output: 'action.yml'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check action.yml main
+      id: check-action-main
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check action.yml main'
+        command: 'cat action.yml'
+        input: ''
+        expected-output: 'dist/index.js'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check action.yml output
+      id: check-action-output
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check action.yml output'
+        command: 'cat action.yml'
+        input: ''
+        expected-output: 'joke:'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for joke-action workflow
+      id: check-joke-workflow
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for joke-action workflow'
+        command: 'ls .github/workflows/joke-action.yml'
+        input: ''
+        expected-output: '.github/workflows/joke-action.yml'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check for issue_comment trigger
+      id: check-issue-comment-trigger
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check for issue_comment trigger'
+        command: 'cat .github/workflows/joke-action.yml'
+        input: ''
+        expected-output: 'issue_comment'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Check workflow name
+      id: check-joke-action-name
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: 'Check workflow name'
+        command: 'cat .github/workflows/joke-action.yml'
+        input: ''
+        expected-output: 'Joke Action'
+        comparison-method: 'contains'
+        max-score: 1
+
+    - name: Test Action Execution
+      id: test-action
+      uses: ./
+
+    - name: Check action output
+      id: check-action-output-value
+      uses: classroom-resources/autograding-io-grader@v1
+      env:
+        JOKE_OUTPUT: ${{ steps.test-action.outputs.joke }}
+      with:
+        test-name: 'Check action output'
+        command: 'echo "$JOKE_OUTPUT"'
+        input: ''
+        expected-output: '.+'
+        comparison-method: 'regex'
+        max-score: 1
+
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      with:
+        runners: 'check-package-json,check-core-dep,check-ncc-dep,check-gitignore,check-main-js,check-joke-js,check-build-script,check-dist-index,check-action-yml,check-action-main,check-action-output,check-joke-workflow,check-issue-comment-trigger,check-joke-action-name,check-action-output-value'
+      env:
+        CHECK-PACKAGE-JSON_RESULTS: "${{steps.check-package-json.outputs.result}}"
+        CHECK-CORE-DEP_RESULTS: "${{steps.check-core-dep.outputs.result}}"
+        CHECK-NCC-DEP_RESULTS: "${{steps.check-ncc-dep.outputs.result}}"
+        CHECK-GITIGNORE_RESULTS: "${{steps.check-gitignore.outputs.result}}"
+        CHECK-MAIN-JS_RESULTS: "${{steps.check-main-js.outputs.result}}"
+        CHECK-JOKE-JS_RESULTS: "${{steps.check-joke-js.outputs.result}}"
+        CHECK-BUILD-SCRIPT_RESULTS: "${{steps.check-build-script.outputs.result}}"
+        CHECK-DIST-INDEX_RESULTS: "${{steps.check-dist-index.outputs.result}}"
+        CHECK-ACTION-YML_RESULTS: "${{steps.check-action-yml.outputs.result}}"
+        CHECK-ACTION-MAIN_RESULTS: "${{steps.check-action-main.outputs.result}}"
+        CHECK-ACTION-OUTPUT_RESULTS: "${{steps.check-action-output.outputs.result}}"
+        CHECK-JOKE-WORKFLOW_RESULTS: "${{steps.check-joke-workflow.outputs.result}}"
+        CHECK-ISSUE-COMMENT-TRIGGER_RESULTS: "${{steps.check-issue-comment-trigger.outputs.result}}"
+        CHECK-JOKE-ACTION-NAME_RESULTS: "${{steps.check-joke-action-name.outputs.result}}"
+        CHECK-ACTION-OUTPUT-VALUE_RESULTS: "${{steps.check-action-output-value.outputs.result}}"
+
